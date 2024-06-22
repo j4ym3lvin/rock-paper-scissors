@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: Verdana, Tahoma, sans-serif, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #e9e981; /* Light background color */
+            color: #333; /* Dark font color */
+        }
+        .container {
+            text-align: center;
+            background-color: #fff1cf; /* White background for container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Adjust width as needed */
+            max-width: 600px; /* Limit maximum width */
+        }
+        .results {
+            margin-bottom: 20px;
+        }
+        .choices {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* Ensure choices wrap on smaller screens */
+            margin-top: 20px;
+        }
+        .choice {
+            font-size: 4rem; /* Increase font size for choices */
+            cursor: pointer;
+            margin: 10px; /* Increase margin for spacing */
+        }
+        .choice-name {
+            font-size: 1rem; /* Font size for choice names */
+            margin-top: 5px; /* Adjust margin for spacing */
+        }
+        .fighting {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem; /* Increase font size for fighting icons */
+            margin-bottom: 20px; /* Add margin for spacing */
+        }
+        .sway {
+            animation: sway 2s infinite alternate;
+        }
+        @keyframes sway {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+        #result-message {
+            font-size: 2rem; /* Increase font size for result message */
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        /* Additional styles for full-screen and score display */
+        .full-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .score {
+            font-size: 1.5rem; /* Increase font size for score */
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        const choices = ['rock', 'paper', 'scissors'];
+        const choicesIcons = {
+            rock: '✊',
+            paper: '✋',
+            scissors: '✌'
+        };
+
+        let playerScore = 0;
+        let computerScore = 0;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.choice').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.id) {
+                        animateChoices(button.id);
+                    }
+                });
+            });
+        });
+
+        function animateChoices(playerChoice) {
+            const enemyChoice = getEnemyChoice();
+            displayTemporaryChoices(playerChoice, enemyChoice);
+
+            const yourChoiceElement = document.getElementById('your-choice');
+            const enemyChoiceElement = document.getElementById('enemy-choice');
+            yourChoiceElement.classList.add('sway');
+            enemyChoiceElement.classList.add('sway');
+
+            setTimeout(() => {
+                yourChoiceElement.classList.remove('sway');
+                enemyChoiceElement.classList.remove('sway');
+                const result = getResult(playerChoice, enemyChoice);
+                displayResult(playerChoice, enemyChoice, result);
+                updateScore(result);
+            }, 1500);
+        }
+
+        function displayTemporaryChoices(playerChoice, enemyChoice) {
+            document.getElementById('your-choice').textContent = choicesIcons[playerChoice];
+            document.getElementById('enemy-choice').textContent = choicesIcons[enemyChoice];
+        }
+
+        function getEnemyChoice() {
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+
+        function getResult(player, enemy) {
+            if (player === enemy) {
+                return 'tie';
+            }
+            if ((player === 'rock' && enemy === 'scissors') ||
+                (player === 'paper' && enemy === 'rock') ||
+                (player === 'scissors' && enemy === 'paper')) {
+                return 'win';
+            }
+            return 'lose';
+        }
+
+        function displayResult(playerChoice, enemyChoice, result) {
+            const resultMessage = document.getElementById('result-message');
+            if (result === 'tie') {
+                resultMessage.textContent = "It's a tie!";
+            } else if (result === 'win') {
+                resultMessage.textContent = "YOU WON!";
+            } else {
+                resultMessage.textContent = "COMPUTER WON!";
+            }
+        }
+
+        function updateScore(result) {
+            const playerScoreElement = document.getElementById('player-score');
+            const computerScoreElement = document.getElementById('computer-score');
+
+            if (result === 'win') {
+                playerScore++;
+            } else if (result === 'lose') {
+                computerScore++;
+            }
+
+            playerScoreElement.textContent = playerScore;
+            computerScoreElement.textContent = computerScore;
+        }
+    </script>
+</head>
+<body>
+    <div class="full-screen">
+        <div class="container">
+            <h1>ROCK - PAPER - SCISSORS GAME</h1>
+            <div class="score">
+                <p>Player: <span id="player-score">0</span></p>
+                <p>Computer: <span id="computer-score">0</span></p>
+            </div>
+            <div class="results">
+                <div class="fighting">
+                    <span id="your-choice">✊</span>
+                    <span>&nbsp;&nbsp;&nbsp;</span>
+                    <span id="enemy-choice">✊</span>
+                </div>
+                <p id="result-message"></p>
+            </div>
+            <div class="choices">
+                <div>
+                    <span class="choice" id="rock">✊</span>
+                    <div class="choice-name">Rock</div>
+                </div>
+                <div>
+                    <span class="choice" id="paper">✋</span>
+                    <div class="choice-name">Paper</div>
+                </div>
+                <div>
+                    <span class="choice" id="scissors">✌</span>
+                    <div class="choice-name">Scissors</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
